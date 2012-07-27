@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Perinci::CmdLine;
 
-our $VERSION = '0.02'; # VERSION
+our $VERSION = '0.03'; # VERSION
 
 Perinci::CmdLine->new(
     url => '/File/Trash/Undoable/',
@@ -43,7 +43,7 @@ Perinci::CmdLine->new(
 
 1;
 # ABSTRACT: Trash files, with undo/redo capability
-# PODNAME: u-trash
+# PODNAME: trash-u
 
 
 __END__
@@ -51,46 +51,46 @@ __END__
 
 =head1 NAME
 
-u-trash - Trash files, with undo/redo capability
+trash-u - Trash files, with undo/redo capability
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
  # trash some files, but in simulation mode, not really trashing the files
- % VERBOSE=1 u-trash --dry-run *.bak
+ % VERBOSE=1 trash-u --dry-run *.bak
 
  # trash some files, for real
- % u-trash *.bak
+ % trash-u *.bak
 
  # list trash contents
- % u-trash --list-contents
+ % trash-u --list-contents
 
  # trash some more files
- % u-trash * .tmp
+ % trash-u * .tmp
 
  # ups made a mistake; no worry, let's undo; now previous trashing is reversed
- % u-trash --undo
+ % trash-u --undo
 
  # undo again; now the *.bak files are also restored
- % u-trash --undo
+ % trash-u --undo
 
  # redo; now the *.bak files are trashed again
- % u-trash --redo
+ % trash-u --redo
 
  # show history
- % u-trash --history
+ % trash-u --history
 
  # forget history; past actions can no longer be undone/redone
- % u-trash --clear-history
+ % trash-u --clear-history
 
  # empty trash; this action is not undoable (the point is to reclaim space)
- % u-trash --empty
+ % trash-u --empty
 
  # display help for more options
- % u-trash --help
+ % trash-u --help
 
 =head1 DESCRIPTION
 
@@ -104,11 +104,11 @@ with caution.
 
 =head1 USING AS rm REPLACEMENT
 
-B<u-trash> can be used as B<rm> replacement (a.k.a. alias) with some caveats:
+B<trash-u> can be used as B<rm> replacement (a.k.a. alias) with some caveats:
 
 =over 4
 
-=item * u-trash deletes directories by default
+=item * trash-u deletes directories by default
 
 That is, it behaves as if -R rm option is in effect.
 

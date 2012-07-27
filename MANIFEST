@@ -6,7 +6,7 @@ MANIFEST.SKIP
 META.json
 META.yml
 README
-bin/u-trash
+bin/trash-u
 dist.ini
 lib/File/Trash/Undoable.pm
 t/00-compile.t

@@ -8,7 +8,7 @@ use Cwd qw(abs_path);
 use File::Trash::FreeDesktop 0.05;
 use Perinci::Sub::Gen::Undoable 0.14 qw(gen_undoable_func);
 
-our $VERSION = '0.02'; # VERSION
+our $VERSION = '0.03'; # VERSION
 
 our %SPEC;
 
@@ -44,7 +44,7 @@ my $res = gen_undoable_func(
         for (@$ff) {
             my $a = abs_path($_);
             return [500, "Can't find $_"] unless $a;
-            push @steps, ["trash", $a];
+            push @steps, ["trash", $a, $_];
         }
         [200, "OK", \@steps];
     },
@@ -53,14 +53,18 @@ my $res = gen_undoable_func(
             summary => 'Trash a file',
             description => <<'_',
 
-Argument is path (should be absolute).
+First argument is path (should be absolute). Second argument (optional) is the
+original path (not yet normalized into absolute).
 
 _
             check => sub {
                 my ($args, $step) = @_;
-                return [200, "OK", ["untrash", $step->[1]]];
+                return [200, "OK", ["untrash", $step->[1], $step->[2]]];
             },
-            fix_log_message => "Trashing %(_step_arg0)s ...",
+            fix_log_message => sub {
+                my ($args, $step) = @_;
+                "Trashing ".($step->[2] // $step->[1])." ...";
+            },
             fix => sub {
                 my ($args, $step, $undo) = @_;
                 my $a = $step->[1];
@@ -72,14 +76,18 @@ _
             summary => 'Untrash a file',
             description => <<'_',
 
-Argument is path.
+First argument is path (absolute). Second argument (optional) is the original
+path (not yet normalized into absolute).
 
 _
             check => sub {
                 my ($args, $step) = @_;
-                return [200, "OK", ["trash", $step->[1]]];
+                return [200, "OK", ["trash", $step->[1], $step->[2]]];
             },
-            fix_log_message => "Untrashing %(_step_arg0)s ...",
+            fix_log_message => sub {
+                my ($args, $step) = @_;
+                "Untrashing ".($step->[2] // $step->[1])." ...";
+            },
             fix => sub {
                 my ($args, $step, $undo) = @_;
                 my $a = $step->[1];
@@ -129,11 +137,11 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
- # use the u-trash, u-trash-empty script
+ # use the trash-u script
 
 =head1 DESCRIPTION
 

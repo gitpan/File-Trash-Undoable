@@ -1,5 +1,17 @@
 Revision history for File-Trash-Undoable
 
+0.03    2012-07-27 (SHARYANTO)
+
+        [INCOMPATIBLE CHANGES]
+
+        - Rename script from u-trash to trash-u
+
+        [ENHANCEMENTS]
+
+        - Nicer log message, don't show absolute path, show original path
+          entered by user.
+
+
 0.02    2012-07-27 (SHARYANTO)
 
         [BUG FIXES]

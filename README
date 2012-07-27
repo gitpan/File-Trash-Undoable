@@ -2,10 +2,10 @@ NAME
     File::Trash::Undoable - Trash files (with undo support)
 
 VERSION
-    version 0.02
+    version 0.03
 
 SYNOPSIS
-     # use the u-trash, u-trash-empty script
+     # use the trash-u script
 
 DESCRIPTION
     This module provides routines to trash files, with undo/redo support.

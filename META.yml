@@ -17,9 +17,9 @@ name: File-Trash-Undoable
 requires:
   File::Trash::FreeDesktop: 0.05
   Perinci::CmdLine: 0.58
-  Perinci::Sub::Gen::Undoable: 0.14
+  Perinci::Sub::Gen::Undoable: 0.15
   perl: 5.010000
 resources:
   homepage: http://metacpan.org/dist/File-Trash-Undoable
   repository: http://github.com/sharyanto/perl-File-Trash-Undoable
-version: 0.02
+version: 0.03
