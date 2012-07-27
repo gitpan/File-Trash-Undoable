@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Perinci::CmdLine;
 
-our $VERSION = '0.01'; # VERSION
+our $VERSION = '0.02'; # VERSION
 
 Perinci::CmdLine->new(
     url => '/File/Trash/Undoable/',
@@ -55,7 +55,7 @@ u-trash - Trash files, with undo/redo capability
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 

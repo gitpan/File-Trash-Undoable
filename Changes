@@ -1,5 +1,16 @@
 Revision history for File-Trash-Undoable
 
-0.01    2012-07-12 (SHARYANTO)
+0.02    2012-07-27 (SHARYANTO)
+
+        [BUG FIXES]
+
+        - --dry-run messages can now been seen at log level 'info' (VERBOSE=1)
+            as documented.
+
+        - Rollback properly when encountering errors in trashing (file not
+          found, permission denied).
+
+
+0.01    2012-07-26 (SHARYANTO)
 
         First version.

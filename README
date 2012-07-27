@@ -2,7 +2,7 @@ NAME
     File::Trash::Undoable - Trash files (with undo support)
 
 VERSION
-    version 0.01
+    version 0.02
 
 SYNOPSIS
      # use the u-trash, u-trash-empty script
