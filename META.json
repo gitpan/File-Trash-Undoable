@@ -27,14 +27,11 @@
       "runtime" : {
          "requires" : {
             "File::Trash::FreeDesktop" : "0.05",
+            "Log::Any" : 0,
+            "Perinci::Access::InProcess" : "0.29",
             "Perinci::CmdLine" : "0.58",
-            "Perinci::Sub::Gen::Undoable" : "0.15",
+            "Perinci::Sub::Gen::Undoable" : "0.24",
             "perl" : "5.010000"
-         }
-      },
-      "test" : {
-         "requires" : {
-            "Test::More" : "0.96"
          }
       }
    },
@@ -45,6 +42,6 @@
          "url" : "http://github.com/sharyanto/perl-File-Trash-Undoable"
       }
    },
-   "version" : "0.03"
+   "version" : "0.04"
 }
 
