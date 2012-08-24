@@ -2,7 +2,7 @@ NAME
     File::Trash::Undoable - Trash files (with undo support)
 
 VERSION
-    version 0.04
+    version 0.05
 
 SYNOPSIS
      # use the trash-u script
@@ -27,12 +27,7 @@ SEE ALSO
         writing, does not support per-filesystem trash (everything goes into
         home trash).
 
-DESCRIPTION
-    This module has Rinci metadata.
-
 FUNCTIONS
-    None are exported by default, but they are exportable.
-
   empty_trash() -> [status, msg, result, meta]
     Empty trash.
 
@@ -68,44 +63,9 @@ FUNCTIONS
 
     Fixable state: path exists.
 
-    This function supports undo operation. This function supports dry-run
-    operation. This function is idempotent (repeated invocations with same
-    arguments has the same effect as single invocation). This function
-    requires transactions.
-
     Arguments ('*' denotes required arguments):
 
-    *   path => *str*
-
-    Special arguments:
-
-    *   -dry_run => *bool*
-
-        Pass -dry_run=>1 to enable simulation mode.
-
-    *   -tx_action => *str*
-
-        You currently can set this to 'rollback'. Usually you do not have to
-        pass this yourself, Perinci::Access::InProcess will do it for you.
-        For more details on transactions, see Rinci::function::Transaction.
-
-    *   -tx_manager => *obj*
-
-        Instance of transaction manager object, usually
-        Perinci::Tx::Manager. Usually you do not have to pass this yourself,
-        Perinci::Access::InProcess will do it for you. For more details on
-        transactions, see Rinci::function::Transaction.
-
-    *   -undo_action => *str*
-
-        To undo, pass -undo_action=>'undo' to function. You will also need
-        to pass -undo_data, unless you use transaction. For more details on
-        undo protocol, see Rinci::function::Undo.
-
-    *   -undo_data => *array*
-
-        Required if you want undo and you do not use transaction. For more
-        details on undo protocol, see Rinci::function::Undo.
+    *   path* => *str*
 
     Return value:
 
@@ -119,11 +79,6 @@ FUNCTIONS
   trash_files(%args) -> [status, msg, result, meta]
     Trash files (with undo support).
 
-    This function supports undo operation. This function supports dry-run
-    operation. This function is idempotent (repeated invocations with same
-    arguments has the same effect as single invocation). This function
-    requires transactions.
-
     Arguments ('*' denotes required arguments):
 
     *   files* => *array*
@@ -131,36 +86,6 @@ FUNCTIONS
         Files/dirs to delete.
 
         Files must exist.
-
-    Special arguments:
-
-    *   -dry_run => *bool*
-
-        Pass -dry_run=>1 to enable simulation mode.
-
-    *   -tx_action => *str*
-
-        You currently can set this to 'rollback'. Usually you do not have to
-        pass this yourself, Perinci::Access::InProcess will do it for you.
-        For more details on transactions, see Rinci::function::Transaction.
-
-    *   -tx_manager => *obj*
-
-        Instance of transaction manager object, usually
-        Perinci::Tx::Manager. Usually you do not have to pass this yourself,
-        Perinci::Access::InProcess will do it for you. For more details on
-        transactions, see Rinci::function::Transaction.
-
-    *   -undo_action => *str*
-
-        To undo, pass -undo_action=>'undo' to function. You will also need
-        to pass -undo_data, unless you use transaction. For more details on
-        undo protocol, see Rinci::function::Undo.
-
-    *   -undo_data => *array*
-
-        Required if you want undo and you do not use transaction. For more
-        details on undo protocol, see Rinci::function::Undo.
 
     Return value:
 
@@ -171,50 +96,19 @@ FUNCTIONS
     the actual result. Fourth element (meta) is called result metadata and
     is optional, a hash that contains extra information.
 
-  untrash() -> [status, msg, result, meta]
+  untrash(%args) -> [status, msg, result, meta]
     Untrash a file.
 
-    Fixed state: path exists.
+    Fixed state: path exists (and if mtime is specified, with same mtime).
 
-    Fixable state: Path does not exist (and entry for path is contained in
-    trash; this bit is currently not implemented).
+    Fixable state: Path does not exist (and exists in trash, and if mtime is
+    specified, has the exact same mtime).
 
-    This function supports undo operation. This function supports dry-run
-    operation. This function is idempotent (repeated invocations with same
-    arguments has the same effect as single invocation). This function
-    requires transactions.
+    Arguments ('*' denotes required arguments):
 
-    No arguments.
+    *   mtime* => *int*
 
-    Special arguments:
-
-    *   -dry_run => *bool*
-
-        Pass -dry_run=>1 to enable simulation mode.
-
-    *   -tx_action => *str*
-
-        You currently can set this to 'rollback'. Usually you do not have to
-        pass this yourself, Perinci::Access::InProcess will do it for you.
-        For more details on transactions, see Rinci::function::Transaction.
-
-    *   -tx_manager => *obj*
-
-        Instance of transaction manager object, usually
-        Perinci::Tx::Manager. Usually you do not have to pass this yourself,
-        Perinci::Access::InProcess will do it for you. For more details on
-        transactions, see Rinci::function::Transaction.
-
-    *   -undo_action => *str*
-
-        To undo, pass -undo_action=>'undo' to function. You will also need
-        to pass -undo_data, unless you use transaction. For more details on
-        undo protocol, see Rinci::function::Undo.
-
-    *   -undo_data => *array*
-
-        Required if you want undo and you do not use transaction. For more
-        details on undo protocol, see Rinci::function::Undo.
+    *   path* => *str*
 
     Return value:
 

@@ -4,7 +4,7 @@
       "Steven Haryanto <stevenharyanto@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300006, CPAN::Meta::Converter version 2.113640",
+   "generated_by" : "Dist::Zilla version 4.300015, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -26,11 +26,11 @@
       },
       "runtime" : {
          "requires" : {
-            "File::Trash::FreeDesktop" : "0.05",
-            "Log::Any" : 0,
-            "Perinci::Access::InProcess" : "0.29",
+            "File::Trash::FreeDesktop" : "0.06",
+            "Log::Any" : "0",
             "Perinci::CmdLine" : "0.58",
-            "Perinci::Sub::Gen::Undoable" : "0.24",
+            "Perinci::Tx::Manager" : "0.30",
+            "Rinci" : "v1.1.26",
             "perl" : "5.010000"
          }
       }
@@ -42,6 +42,6 @@
          "url" : "http://github.com/sharyanto/perl-File-Trash-Undoable"
       }
    },
-   "version" : "0.04"
+   "version" : "0.05"
 }
 

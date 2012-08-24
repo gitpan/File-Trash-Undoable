@@ -1,5 +1,21 @@
 Revision history for File-Trash-Undoable
 
+0.05    2012-08-24 (SHARYANTO) (not yet released)
+
+        [REMOVED FEATURES]
+
+        - dry_run is removed; it will be provided by Perinci::CmdLine via
+          -tx_action=check_state. Until the new Perinci::CmdLine is out,
+          dry-running is not available.
+
+        [ETC]
+
+        - Add 'mtime' argument.
+
+        - Update to Rinci::Transaction protocol version v=2. No longer uses
+          Perinci::Sub::Gen::Undoable.
+
+
 0.04    2012-08-16 (SHARYANTO)
 
         - Update to using Perinci::Sub::Gen::Undoable 0.25 (v=2).

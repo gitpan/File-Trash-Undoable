@@ -17,17 +17,17 @@ my %module_build_args = (
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "File-Trash-Undoable",
-  "dist_version" => "0.04",
+  "dist_version" => "0.05",
   "license" => "perl",
   "module_name" => "File::Trash::Undoable",
   "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
-    "File::Trash::FreeDesktop" => "0.05",
+    "File::Trash::FreeDesktop" => "0.06",
     "Log::Any" => 0,
-    "Perinci::Access::InProcess" => "0.29",
     "Perinci::CmdLine" => "0.58",
-    "Perinci::Sub::Gen::Undoable" => "0.24",
+    "Perinci::Tx::Manager" => "0.30",
+    "Rinci" => "v1.1.26",
     "perl" => "5.010000"
   },
   "script_files" => [

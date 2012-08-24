@@ -6,24 +6,22 @@ use warnings;
 use Log::Any '$log';
 
 use Cwd qw(abs_path);
-use File::Trash::FreeDesktop 0.05;
-use Perinci::Sub::Gen::Undoable 0.24 qw(gen_undoable_func);
+use File::Trash::FreeDesktop 0.06;
 
-our $VERSION = '0.04'; # VERSION
+our $VERSION = '0.05'; # VERSION
 
 our %SPEC;
 
 my $trash = File::Trash::FreeDesktop->new;
 
-my $res;
-
-$res = gen_undoable_func(
-    v => 2,
-    name => 'trash',
-    summary => 'Trash a file',
-    args => {
+$SPEC{trash} = {
+    v           => 1.1,
+    name        => 'trash',
+    summary     => 'Trash a file',
+    args        => {
         path => {
             schema => 'str*',
+            req => 1,
         },
     },
     description => <<'_',
@@ -33,73 +31,112 @@ Fixed state: path does not exist.
 Fixable state: path exists.
 
 _
-    check_args => sub {
-        # TMP, schema
-        my $args = shift;
-        defined($args->{path}) or return [400, "Please specify path"];
-        [200, "OK"];
+    features => {
+        tx => {v=>2},
+        idempotent => 1,
     },
-    check_or_fix_state => sub {
-        my ($which, $args, $step) = @_;
+};
+sub trash {
+    my %args = @_;
 
-        #my $do_log   = !$args->{-check_state};
-        my $path     = $args->{path};
-        my $exists   = (-l $path) || (-e _);
+    # TMP, SCHEMA
+    my $tx_action = $args{-tx_action} // "";
+    my $path = $args{path};
+    defined($path) or return [400, "Please specify path"];
 
-        my @u;
-        if ($which eq 'check') {
-            if ($exists) {
-                push @u, [__PACKAGE__.'::untrash', {path => $path}];
-            }
-            return @u ? [200,"OK",undef,{undo_data=>\@u}]:[304,"Nothing to do"];
+    my @st     = lstat($path);
+    my $exists = (-l _) || (-e _);
+
+    my @undo;
+
+    if ($tx_action eq 'check_state') {
+        if ($exists) {
+            push @undo, [untrash => {path=>$path, mtime=>$st[9]}];
         }
+        if (@undo) {
+            return [200, "Fixable", undef, {undo_actions=>\@undo}];
+        } else {
+            return [304, "Fixed"];
+        }
+    } elsif ($tx_action eq 'fix_state') {
         $log->info("Trashing $path ...");
         eval { $trash->trash($path) };
         return $@ ? [500, "trash() failed: $@"] : [200, "OK"];
     }
-);
-$res->[0] == 200 or die "Can't generate untrash(): $res->[0] - $res->[1]";
+    [400, "Invalid -tx_action"];
+}
 
-$res = gen_undoable_func(
-    v => 2,
-    name => 'untrash',
-    summary => 'Untrash a file',
+$SPEC{untrash} = {
+    v           => 1.1,
+    summary     => 'Untrash a file',
     description => <<'_',
 
-Fixed state: path exists.
+Fixed state: path exists (and if mtime is specified, with same mtime).
 
-Fixable state: Path does not exist (and entry for path is contained in trash;
-this bit is currently not implemented).
+Fixable state: Path does not exist (and exists in trash, and if mtime is
+specified, has the exact same mtime).
 
 _
-    check_or_fix_state => sub {
-        my ($which, $args, $undo) = @_;
-
-        #my $do_log   = !$args->{-check_state};
-        my $path     = $args->{path};
-        my $exists   = (-l $path) || (-e _);
-
-        my @u;
-        if ($which eq 'check') {
-            if (!$exists) {
-                push @u, [__PACKAGE__.'::trash', {path => $path}];
-            }
-            return @u ? [200,"OK",undef,{undo_data=>\@u}]:[304,"Nothing to do"];
-        }
-        $log->info("Untrashing $path ...");
-        #eval { $trash->recover({on_target_exists=>'ignore', on_not_found=>'ignore'}, $path) };
-        eval { $trash->recover($path) };
-        return $@ ? [500, "untrash() failed: $@"] : [200, "OK"];
+    args        => {
+        path => {
+            schema => 'str*',
+            req => 1,
+        },
+        mtime => {
+            schema => 'int*',
+        },
     },
-);
-$res->[0] == 200 or die "Can't generate untrash(): $res->[0] - $res->[1]";
+    features => {
+        tx => {v=>2},
+        idempotent => 1,
+    },
+};
+sub untrash {
+    my %args = @_;
 
-$res = gen_undoable_func(
-    v => 2,
-    name => 'trash_files',
-    summary => 'Trash files (with undo support)',
-    req_tx => 1,
-    args => {
+    # TMP, SCHEMA
+    my $tx_action = $args{-tx_action} // "";
+    my $path0 = $args{path};
+    defined($path0) or return [400, "Please specify path"];
+    my $mtime = $args{mtime};
+
+    my $apath  = abs_path($path0);
+    my @st     = lstat($apath);
+    my $exists = (-l _) || (-e _);
+
+    if ($tx_action eq 'check_state') {
+
+        my @undo;
+        if ($exists) {
+            if (defined $mtime) {
+                if ($st[9] == $mtime) {
+                    return [304, "Path exists (with same mtime)"];
+                } else {
+                    return [412, "Path exists (with different mtime)"];
+                }
+            } else {
+                return [304, "Path exists"];
+            }
+        }
+
+        my @res = $trash->list_contents({
+            search_path=>$apath, mtime=>$args{mtime}});
+        return [412, "Path does not exist in trash"] unless @res;
+        push @undo, [trash => {path => $apath}];
+        return [200, "Fixable", undef, {undo_actions=>\@undo}];
+
+    } elsif ($tx_action eq 'fix_state') {
+        $log->info("Untrashing $path0 ...");
+        eval { $trash->recover($apath) };
+        return $@ ? [500, "untrash() failed: $@"] : [200, "OK"];
+    }
+    [400, "Invalid -tx_action"];
+}
+
+$SPEC{trash_files} = {
+    v          => 1.1,
+    summary    => 'Trash files (with undo support)',
+    args       => {
         files => {
             summary => 'Files/dirs to delete',
             description => <<'_',
@@ -113,39 +150,33 @@ _
             greedy => 1,
         },
     },
-    check_args => sub {
-        my $args = shift;
-        my $ff   = $args->{files};
-        $ff or return [400, "Please specify files"];
-        ref($ff) eq 'ARRAY' or return [400, "Files must be array"];
-        @$ff > 0 or return [400, "Please specify at least 1 file"];
-        for (@$ff) {
-            (-l $_) || (-e _) or return [400, "File does not exist: $_"];
-            my $orig = $_;
-            $_ = abs_path($_);
-            $_ or return [400, "Can't convert to absolute path: $orig"];
-        }
-        [200, "OK"];
+    features => {
+        tx => {v=>2},
+        idempotent => 1,
     },
-    check_or_fix_state => sub {
-        my ($which, $args, $undo) = @_;
+};
+sub trash_files {
+    my %args = @_;
 
-        my $ff = $args->{files};
-        my $tm = $args->{-tx_manager};
+    # TMP, SCHEMA
+    my $ff   = $args{files};
+    $ff or return [400, "Please specify files"];
+    ref($ff) eq 'ARRAY' or return [400, "Files must be array"];
+    @$ff > 0 or return [400, "Please specify at least 1 file"];
 
-        my @u;
-        if ($which eq 'check') {
-            push @u, [__PACKAGE__."::untrash", {path=>$_}]
-                for @$ff;
-            return @u ? [200,"OK",undef,{undo_data=>\@u}]:[304,"Nothing to do"];
-        } else {
-            $tm->_empty_undo_data;
-            return $tm->call(calls => [
-                map { [__PACKAGE__."::trash", {path=>$_}] } @$ff ]);
-        }
-    },
-);
-$res->[0] == 200 or die "Can't generate trash_files(): $res->[0] - $res->[1]";
+    my (@do, @undo);
+    for (@$ff) {
+        my @st = lstat($_) or return [400, "Can't stat $_: $!"];
+        (-l _) || (-e _) or return [400, "File does not exist: $_"];
+        my $orig = $_;
+        $_ = abs_path($_);
+        $_ or return [400, "Can't convert to absolute path: $orig"];
+        push @do  , [trash   => {path=>$_}];
+        push @undo, [untrash => {path=>$_, mtime=>$st[9]}];
+    }
+
+    return [200, "Fixable", undef, {do_actions=>\@do, undo_actions=>\@undo}];
+}
 
 $SPEC{list_trash_contents} = {
     summary => 'List contents of trash directory',
@@ -184,7 +215,7 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
@@ -215,15 +246,8 @@ support per-filesystem trash (everything goes into home trash).
 
 =back
 
-=head1 DESCRIPTION
-
-
-This module has L<Rinci> metadata.
-
 =head1 FUNCTIONS
 
-
-None are exported by default, but they are exportable.
 
 =head2 empty_trash() -> [status, msg, result, meta]
 
@@ -253,40 +277,11 @@ Fixed state: path does not exist.
 
 Fixable state: path exists.
 
-This function supports undo operation. This function supports dry-run operation. This function is idempotent (repeated invocations with same arguments has the same effect as single invocation). This function requires transactions.
-
-
 Arguments ('*' denotes required arguments):
 
 =over 4
 
-=item * B<path> => I<str>
-
-=back
-
-Special arguments:
-
-=over 4
-
-=item * B<-dry_run> => I<bool>
-
-Pass -dry_run=>1 to enable simulation mode.
-
-=item * B<-tx_action> => I<str>
-
-You currently can set this to 'rollback'. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
-
-=item * B<-tx_manager> => I<obj>
-
-Instance of transaction manager object, usually L<Perinci::Tx::Manager>. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
-
-=item * B<-undo_action> => I<str>
-
-To undo, pass -undo_action=>'undo' to function. You will also need to pass -undo_data, unless you use transaction. For more details on undo protocol, see L<Rinci::function::Undo>.
-
-=item * B<-undo_data> => I<array>
-
-Required if you want undo and you do not use transaction. For more details on undo protocol, see L<Rinci::function::Undo>.
+=item * B<path>* => I<str>
 
 =back
 
@@ -297,9 +292,6 @@ Returns an enveloped result (an array). First element (status) is an integer con
 =head2 trash_files(%args) -> [status, msg, result, meta]
 
 Trash files (with undo support).
-
-This function supports undo operation. This function supports dry-run operation. This function is idempotent (repeated invocations with same arguments has the same effect as single invocation). This function requires transactions.
-
 
 Arguments ('*' denotes required arguments):
 
@@ -313,73 +305,26 @@ Files must exist.
 
 =back
 
-Special arguments:
-
-=over 4
-
-=item * B<-dry_run> => I<bool>
-
-Pass -dry_run=>1 to enable simulation mode.
-
-=item * B<-tx_action> => I<str>
-
-You currently can set this to 'rollback'. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
-
-=item * B<-tx_manager> => I<obj>
-
-Instance of transaction manager object, usually L<Perinci::Tx::Manager>. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
-
-=item * B<-undo_action> => I<str>
-
-To undo, pass -undo_action=>'undo' to function. You will also need to pass -undo_data, unless you use transaction. For more details on undo protocol, see L<Rinci::function::Undo>.
-
-=item * B<-undo_data> => I<array>
-
-Required if you want undo and you do not use transaction. For more details on undo protocol, see L<Rinci::function::Undo>.
-
-=back
-
 Return value:
 
 Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
 
-=head2 untrash() -> [status, msg, result, meta]
+=head2 untrash(%args) -> [status, msg, result, meta]
 
 Untrash a file.
 
-Fixed state: path exists.
+Fixed state: path exists (and if mtime is specified, with same mtime).
 
-Fixable state: Path does not exist (and entry for path is contained in trash;
-this bit is currently not implemented).
+Fixable state: Path does not exist (and exists in trash, and if mtime is
+specified, has the exact same mtime).
 
-This function supports undo operation. This function supports dry-run operation. This function is idempotent (repeated invocations with same arguments has the same effect as single invocation). This function requires transactions.
-
-
-No arguments.
-
-Special arguments:
+Arguments ('*' denotes required arguments):
 
 =over 4
 
-=item * B<-dry_run> => I<bool>
+=item * B<mtime>* => I<int>
 
-Pass -dry_run=>1 to enable simulation mode.
-
-=item * B<-tx_action> => I<str>
-
-You currently can set this to 'rollback'. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
-
-=item * B<-tx_manager> => I<obj>
-
-Instance of transaction manager object, usually L<Perinci::Tx::Manager>. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
-
-=item * B<-undo_action> => I<str>
-
-To undo, pass -undo_action=>'undo' to function. You will also need to pass -undo_data, unless you use transaction. For more details on undo protocol, see L<Rinci::function::Undo>.
-
-=item * B<-undo_data> => I<array>
-
-Required if you want undo and you do not use transaction. For more details on undo protocol, see L<Rinci::function::Undo>.
+=item * B<path>* => I<str>
 
 =back
 
