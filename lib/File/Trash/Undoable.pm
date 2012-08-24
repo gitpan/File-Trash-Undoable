@@ -5,10 +5,10 @@ use strict;
 use warnings;
 use Log::Any '$log';
 
-use Cwd qw(abs_path);
-use File::Trash::FreeDesktop 0.06;
+use SHARYANTO::File::Util qw(l_abs_path);
+use File::Trash::FreeDesktop;
 
-our $VERSION = '0.05'; # VERSION
+our $VERSION = '0.06'; # VERSION
 
 our %SPEC;
 
@@ -100,7 +100,7 @@ sub untrash {
     defined($path0) or return [400, "Please specify path"];
     my $mtime = $args{mtime};
 
-    my $apath  = abs_path($path0);
+    my $apath  = l_abs_path($path0);
     my @st     = lstat($apath);
     my $exists = (-l _) || (-e _);
 
@@ -169,7 +169,7 @@ sub trash_files {
         my @st = lstat($_) or return [400, "Can't stat $_: $!"];
         (-l _) || (-e _) or return [400, "File does not exist: $_"];
         my $orig = $_;
-        $_ = abs_path($_);
+        $_ = l_abs_path($_);
         $_ or return [400, "Can't convert to absolute path: $orig"];
         push @do  , [trash   => {path=>$_}];
         push @undo, [untrash => {path=>$_, mtime=>$st[9]}];
@@ -215,7 +215,7 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 SYNOPSIS
 
@@ -246,8 +246,15 @@ support per-filesystem trash (everything goes into home trash).
 
 =back
 
+=head1 DESCRIPTION
+
+
+This module has L<Rinci> metadata.
+
 =head1 FUNCTIONS
 
+
+None are exported by default, but they are exportable.
 
 =head2 empty_trash() -> [status, msg, result, meta]
 
@@ -277,11 +284,28 @@ Fixed state: path does not exist.
 
 Fixable state: path exists.
 
+This function is idempotent (repeated invocations with same arguments has the same effect as single invocation).
+
+
 Arguments ('*' denotes required arguments):
 
 =over 4
 
 =item * B<path>* => I<str>
+
+=back
+
+Special arguments:
+
+=over 4
+
+=item * B<-tx_action> => I<str>
+
+You currently can set this to 'rollback'. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
+
+=item * B<-tx_manager> => I<obj>
+
+Instance of transaction manager object, usually L<Perinci::Tx::Manager>. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
 
 =back
 
@@ -293,6 +317,9 @@ Returns an enveloped result (an array). First element (status) is an integer con
 
 Trash files (with undo support).
 
+This function is idempotent (repeated invocations with same arguments has the same effect as single invocation).
+
+
 Arguments ('*' denotes required arguments):
 
 =over 4
@@ -302,6 +329,20 @@ Arguments ('*' denotes required arguments):
 Files/dirs to delete.
 
 Files must exist.
+
+=back
+
+Special arguments:
+
+=over 4
+
+=item * B<-tx_action> => I<str>
+
+You currently can set this to 'rollback'. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
+
+=item * B<-tx_manager> => I<obj>
+
+Instance of transaction manager object, usually L<Perinci::Tx::Manager>. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
 
 =back
 
@@ -318,13 +359,30 @@ Fixed state: path exists (and if mtime is specified, with same mtime).
 Fixable state: Path does not exist (and exists in trash, and if mtime is
 specified, has the exact same mtime).
 
+This function is idempotent (repeated invocations with same arguments has the same effect as single invocation).
+
+
 Arguments ('*' denotes required arguments):
 
 =over 4
 
-=item * B<mtime>* => I<int>
+=item * B<mtime> => I<int>
 
 =item * B<path>* => I<str>
+
+=back
+
+Special arguments:
+
+=over 4
+
+=item * B<-tx_action> => I<str>
+
+You currently can set this to 'rollback'. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
+
+=item * B<-tx_manager> => I<obj>
+
+Instance of transaction manager object, usually L<Perinci::Tx::Manager>. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
 
 =back
 

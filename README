@@ -2,7 +2,7 @@ NAME
     File::Trash::Undoable - Trash files (with undo support)
 
 VERSION
-    version 0.05
+    version 0.06
 
 SYNOPSIS
      # use the trash-u script
@@ -27,7 +27,12 @@ SEE ALSO
         writing, does not support per-filesystem trash (everything goes into
         home trash).
 
+DESCRIPTION
+    This module has Rinci metadata.
+
 FUNCTIONS
+    None are exported by default, but they are exportable.
+
   empty_trash() -> [status, msg, result, meta]
     Empty trash.
 
@@ -63,9 +68,27 @@ FUNCTIONS
 
     Fixable state: path exists.
 
+    This function is idempotent (repeated invocations with same arguments
+    has the same effect as single invocation).
+
     Arguments ('*' denotes required arguments):
 
     *   path* => *str*
+
+    Special arguments:
+
+    *   -tx_action => *str*
+
+        You currently can set this to 'rollback'. Usually you do not have to
+        pass this yourself, Perinci::Access::InProcess will do it for you.
+        For more details on transactions, see Rinci::function::Transaction.
+
+    *   -tx_manager => *obj*
+
+        Instance of transaction manager object, usually
+        Perinci::Tx::Manager. Usually you do not have to pass this yourself,
+        Perinci::Access::InProcess will do it for you. For more details on
+        transactions, see Rinci::function::Transaction.
 
     Return value:
 
@@ -79,6 +102,9 @@ FUNCTIONS
   trash_files(%args) -> [status, msg, result, meta]
     Trash files (with undo support).
 
+    This function is idempotent (repeated invocations with same arguments
+    has the same effect as single invocation).
+
     Arguments ('*' denotes required arguments):
 
     *   files* => *array*
@@ -86,6 +112,21 @@ FUNCTIONS
         Files/dirs to delete.
 
         Files must exist.
+
+    Special arguments:
+
+    *   -tx_action => *str*
+
+        You currently can set this to 'rollback'. Usually you do not have to
+        pass this yourself, Perinci::Access::InProcess will do it for you.
+        For more details on transactions, see Rinci::function::Transaction.
+
+    *   -tx_manager => *obj*
+
+        Instance of transaction manager object, usually
+        Perinci::Tx::Manager. Usually you do not have to pass this yourself,
+        Perinci::Access::InProcess will do it for you. For more details on
+        transactions, see Rinci::function::Transaction.
 
     Return value:
 
@@ -104,11 +145,29 @@ FUNCTIONS
     Fixable state: Path does not exist (and exists in trash, and if mtime is
     specified, has the exact same mtime).
 
+    This function is idempotent (repeated invocations with same arguments
+    has the same effect as single invocation).
+
     Arguments ('*' denotes required arguments):
 
-    *   mtime* => *int*
+    *   mtime => *int*
 
     *   path* => *str*
+
+    Special arguments:
+
+    *   -tx_action => *str*
+
+        You currently can set this to 'rollback'. Usually you do not have to
+        pass this yourself, Perinci::Access::InProcess will do it for you.
+        For more details on transactions, see Rinci::function::Transaction.
+
+    *   -tx_manager => *obj*
+
+        Instance of transaction manager object, usually
+        Perinci::Tx::Manager. Usually you do not have to pass this yourself,
+        Perinci::Access::InProcess will do it for you. For more details on
+        transactions, see Rinci::function::Transaction.
 
     Return value:
 
