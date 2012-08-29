@@ -7,8 +7,9 @@ use Log::Any '$log';
 
 use SHARYANTO::File::Util qw(l_abs_path);
 use File::Trash::FreeDesktop;
+use UUID::Random;
 
-our $VERSION = '0.06'; # VERSION
+our $VERSION = '0.07'; # VERSION
 
 our %SPEC;
 
@@ -22,6 +23,9 @@ $SPEC{trash} = {
         path => {
             schema => 'str*',
             req => 1,
+        },
+        suffix => {
+            schema => 'str',
         },
     },
     description => <<'_',
@@ -43,27 +47,40 @@ sub trash {
     my $tx_action = $args{-tx_action} // "";
     my $path = $args{path};
     defined($path) or return [400, "Please specify path"];
+    my $suffix = $args{suffix};
 
     my @st     = lstat($path);
     my $exists = (-l _) || (-e _);
 
-    my @undo;
+    my (@do, @undo);
 
-    if ($tx_action eq 'check_state') {
-        if ($exists) {
-            push @undo, [untrash => {path=>$path, mtime=>$st[9]}];
+    if (defined $suffix) {
+        if ($tx_action eq 'check_state') {
+            if ($exists) {
+                push @undo, [untrash => {path=>$path, suffix=>$suffix}];
+            }
+            if (@undo) {
+                return [200, "Fixable", undef, {undo_actions=>\@undo}];
+            } else {
+                return [304, "Fixed"];
+            }
+        } elsif ($tx_action eq 'fix_state') {
+            $log->info("Trashing $path ...");
+            eval { $trash->trash({suffix=>$suffix}, $path) };
+            return $@ ? [500, "trash() failed: $@"] : [200, "OK"];
         }
-        if (@undo) {
-            return [200, "Fixable", undef, {undo_actions=>\@undo}];
+        return [400, "Invalid -tx_action"];
+    } else {
+        $suffix = substr(UUID::Random::generate(), 0, 8); # 32-bit suffices now
+        if ($exists) {
+            push @do,   [trash   => {path=>$path, suffix=>$suffix}];
+            push @undo, [untrash => {path=>$path, suffix=>$suffix}];
+            return [200, "Fixable", undef, {
+                do_actions => \@do, undo_actions => \@undo}];
         } else {
             return [304, "Fixed"];
         }
-    } elsif ($tx_action eq 'fix_state') {
-        $log->info("Trashing $path ...");
-        eval { $trash->trash($path) };
-        return $@ ? [500, "trash() failed: $@"] : [200, "OK"];
     }
-    [400, "Invalid -tx_action"];
 }
 
 $SPEC{untrash} = {
@@ -71,10 +88,10 @@ $SPEC{untrash} = {
     summary     => 'Untrash a file',
     description => <<'_',
 
-Fixed state: path exists (and if mtime is specified, with same mtime).
+Fixed state: path exists.
 
-Fixable state: Path does not exist (and exists in trash, and if mtime is
-specified, has the exact same mtime).
+Fixable state: Path does not exist (and exists in trash, and if suffix is
+specified, has the same suffix).
 
 _
     args        => {
@@ -82,8 +99,8 @@ _
             schema => 'str*',
             req => 1,
         },
-        mtime => {
-            schema => 'int*',
+        suffix => {
+            schema => 'str',
         },
     },
     features => {
@@ -98,7 +115,7 @@ sub untrash {
     my $tx_action = $args{-tx_action} // "";
     my $path0 = $args{path};
     defined($path0) or return [400, "Please specify path"];
-    my $mtime = $args{mtime};
+    my $suffix = $args{suffix};
 
     my $apath  = l_abs_path($path0);
     my @st     = lstat($apath);
@@ -107,27 +124,17 @@ sub untrash {
     if ($tx_action eq 'check_state') {
 
         my @undo;
-        if ($exists) {
-            if (defined $mtime) {
-                if ($st[9] == $mtime) {
-                    return [304, "Path exists (with same mtime)"];
-                } else {
-                    return [412, "Path exists (with different mtime)"];
-                }
-            } else {
-                return [304, "Path exists"];
-            }
-        }
+        return [304, "Path exists"] if $exists;
 
         my @res = $trash->list_contents({
-            search_path=>$apath, mtime=>$args{mtime}});
+            search_path=>$apath, suffix=>$suffix});
         return [412, "Path does not exist in trash"] unless @res;
-        push @undo, [trash => {path => $apath}];
+        push @undo, [trash => {path => $apath, suffix=>$suffix}];
         return [200, "Fixable", undef, {undo_actions=>\@undo}];
 
     } elsif ($tx_action eq 'fix_state') {
         $log->info("Untrashing $path0 ...");
-        eval { $trash->recover($apath) };
+        eval { $trash->recover({suffix=>$suffix}, $apath) };
         return $@ ? [500, "untrash() failed: $@"] : [200, "OK"];
     }
     [400, "Invalid -tx_action"];
@@ -215,7 +222,7 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
@@ -293,6 +300,8 @@ Arguments ('*' denotes required arguments):
 
 =item * B<path>* => I<str>
 
+=item * B<suffix> => I<str>
+
 =back
 
 Special arguments:
@@ -354,10 +363,10 @@ Returns an enveloped result (an array). First element (status) is an integer con
 
 Untrash a file.
 
-Fixed state: path exists (and if mtime is specified, with same mtime).
+Fixed state: path exists.
 
-Fixable state: Path does not exist (and exists in trash, and if mtime is
-specified, has the exact same mtime).
+Fixable state: Path does not exist (and exists in trash, and if suffix is
+specified, has the same suffix).
 
 This function is idempotent (repeated invocations with same arguments has the same effect as single invocation).
 
@@ -366,9 +375,9 @@ Arguments ('*' denotes required arguments):
 
 =over 4
 
-=item * B<mtime> => I<int>
-
 =item * B<path>* => I<str>
+
+=item * B<suffix> => I<str>
 
 =back
 

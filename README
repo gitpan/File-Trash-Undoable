@@ -2,7 +2,7 @@ NAME
     File::Trash::Undoable - Trash files (with undo support)
 
 VERSION
-    version 0.06
+    version 0.07
 
 SYNOPSIS
      # use the trash-u script
@@ -75,6 +75,8 @@ FUNCTIONS
 
     *   path* => *str*
 
+    *   suffix => *str*
+
     Special arguments:
 
     *   -tx_action => *str*
@@ -140,19 +142,19 @@ FUNCTIONS
   untrash(%args) -> [status, msg, result, meta]
     Untrash a file.
 
-    Fixed state: path exists (and if mtime is specified, with same mtime).
+    Fixed state: path exists.
 
-    Fixable state: Path does not exist (and exists in trash, and if mtime is
-    specified, has the exact same mtime).
+    Fixable state: Path does not exist (and exists in trash, and if suffix
+    is specified, has the same suffix).
 
     This function is idempotent (repeated invocations with same arguments
     has the same effect as single invocation).
 
     Arguments ('*' denotes required arguments):
 
-    *   mtime => *int*
-
     *   path* => *str*
+
+    *   suffix => *str*
 
     Special arguments:
 

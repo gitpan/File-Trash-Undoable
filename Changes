@@ -1,5 +1,13 @@
 Revision history for File-Trash-Undoable
 
+0.07    2012-08-28 (SHARYANTO)
+
+        [ENHANCEMENT]
+
+        - Update to File::Trash::FreeDesktop 0.08. Replace using mtime with
+          using suffix.
+
+
 0.06    2012-08-24 (SHARYANTO)
 
         [ENHANCEMENT]
