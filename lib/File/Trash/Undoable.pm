@@ -7,9 +7,8 @@ use Log::Any '$log';
 
 use SHARYANTO::File::Util qw(l_abs_path);
 use File::Trash::FreeDesktop;
-use UUID::Random;
 
-our $VERSION = '0.07'; # VERSION
+our $VERSION = '0.08'; # VERSION
 
 our %SPEC;
 
@@ -45,9 +44,10 @@ sub trash {
 
     # TMP, SCHEMA
     my $tx_action = $args{-tx_action} // "";
-    my $path = $args{path};
+    my $dry_run   = $args{-dry_run};
+    my $path      = $args{path};
     defined($path) or return [400, "Please specify path"];
-    my $suffix = $args{suffix};
+    my $suffix    = $args{suffix};
 
     my @st     = lstat($path);
     my $exists = (-l _) || (-e _);
@@ -57,12 +57,14 @@ sub trash {
     if (defined $suffix) {
         if ($tx_action eq 'check_state') {
             if ($exists) {
-                push @undo, [untrash => {path=>$path, suffix=>$suffix}];
+                unshift @undo, [untrash => {path=>$path, suffix=>$suffix}];
             }
             if (@undo) {
-                return [200, "Fixable", undef, {undo_actions=>\@undo}];
+                $log->info("(DRY) Trashing $path ...") if $dry_run;
+                return [200, "File/dir $path should be trashed",
+                        undef, {undo_actions=>\@undo}];
             } else {
-                return [304, "Fixed"];
+                return [304, "File/dir $path already does not exist"];
             }
         } elsif ($tx_action eq 'fix_state') {
             $log->info("Trashing $path ...");
@@ -71,14 +73,18 @@ sub trash {
         }
         return [400, "Invalid -tx_action"];
     } else {
-        $suffix = substr(UUID::Random::generate(), 0, 8); # 32-bit suffices now
+        my $taid = $args{-tx_action_id}
+            or return [412, "Please specify -tx_action_id"];
+        $suffix = substr($taid, 0, 8);
         if ($exists) {
-            push @do,   [trash   => {path=>$path, suffix=>$suffix}];
-            push @undo, [untrash => {path=>$path, suffix=>$suffix}];
-            return [200, "Fixable", undef, {
-                do_actions => \@do, undo_actions => \@undo}];
+            push    @do  , [trash   => {path=>$path, suffix=>$suffix}];
+            unshift @undo, [untrash => {path=>$path, suffix=>$suffix}];
+        }
+        if (@undo) {
+            $log->info("(DRY) Trashing $path (suffix $suffix) ...") if $dry_run;
+            return [200, "", undef, {do_actions=>\@do, undo_actions=>\@undo}];
         } else {
-            return [304, "Fixed"];
+            return [304, "File/dir $path already does not exist"];
         }
     }
 }
@@ -113,24 +119,27 @@ sub untrash {
 
     # TMP, SCHEMA
     my $tx_action = $args{-tx_action} // "";
-    my $path0 = $args{path};
+    my $dry_run   = $args{-dry_run};
+    my $path0     = $args{path};
     defined($path0) or return [400, "Please specify path"];
-    my $suffix = $args{suffix};
+    my $suffix    = $args{suffix};
 
-    my $apath  = l_abs_path($path0);
-    my @st     = lstat($apath);
-    my $exists = (-l _) || (-e _);
+    my $apath     = l_abs_path($path0);
+    my @st        = lstat($apath);
+    my $exists    = (-l _) || (-e _);
 
     if ($tx_action eq 'check_state') {
 
         my @undo;
-        return [304, "Path exists"] if $exists;
+        return [304, "Path $path0 already exists"] if $exists;
 
         my @res = $trash->list_contents({
             search_path=>$apath, suffix=>$suffix});
-        return [412, "Path does not exist in trash"] unless @res;
-        push @undo, [trash => {path => $apath, suffix=>$suffix}];
-        return [200, "Fixable", undef, {undo_actions=>\@undo}];
+        return [412, "File/dir $path0 does not exist in trash"] unless @res;
+        unshift @undo, [trash => {path => $apath, suffix=>$suffix}];
+        $log->info("(DRY) Untrashing $path0 ...") if $dry_run;
+        return [200, "File/dir $path0 should be untrashed",
+                undef, {undo_actions=>\@undo}];
 
     } elsif ($tx_action eq 'fix_state') {
         $log->info("Untrashing $path0 ...");
@@ -166,7 +175,8 @@ sub trash_files {
     my %args = @_;
 
     # TMP, SCHEMA
-    my $ff   = $args{files};
+    my $dry_run = $args{-dry_run};
+    my $ff      = $args{files};
     $ff or return [400, "Please specify files"];
     ref($ff) eq 'ARRAY' or return [400, "Files must be array"];
     @$ff > 0 or return [400, "Please specify at least 1 file"];
@@ -178,11 +188,12 @@ sub trash_files {
         my $orig = $_;
         $_ = l_abs_path($_);
         $_ or return [400, "Can't convert to absolute path: $orig"];
-        push @do  , [trash   => {path=>$_}];
-        push @undo, [untrash => {path=>$_, mtime=>$st[9]}];
+        $log->infof("(DRY) Trashing %s ...", $orig) if $dry_run;
+        push    @do  , [trash   => {path=>$_}];
+        unshift @undo, [untrash => {path=>$_, mtime=>$st[9]}];
     }
 
-    return [200, "Fixable", undef, {do_actions=>\@do, undo_actions=>\@undo}];
+    return [200, "", undef, {do_actions=>\@do, undo_actions=>\@undo}];
 }
 
 $SPEC{list_trash_contents} = {
@@ -222,7 +233,7 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
@@ -230,8 +241,8 @@ version 0.07
 
 =head1 DESCRIPTION
 
-This module provides routines to trash files, with undo/redo support. Originally
-written to demonstrate/test L<Perinci::Sub::Gen::Undoable>.
+This module provides routines to trash files, with undo/redo support. Actual
+trashing/untrashing is provided by L<File::Trash::FreeDesktop>.
 
 =head1 SEE ALSO
 

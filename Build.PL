@@ -23,7 +23,7 @@ my %module_build_args = (
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "File-Trash-Undoable",
-  "dist_version" => "0.07",
+  "dist_version" => "0.08",
   "license" => "perl",
   "module_name" => "File::Trash::Undoable",
   "recommends" => {},
@@ -32,10 +32,9 @@ my %module_build_args = (
     "File::Trash::FreeDesktop" => "0.08",
     "Log::Any" => 0,
     "Perinci::CmdLine" => "0.58",
-    "Perinci::Tx::Manager" => "0.30",
-    "Rinci" => "v1.1.26",
+    "Perinci::Tx::Manager" => "0.38",
+    "Rinci" => "v1.1.29",
     "SHARYANTO::File::Util" => "0.26",
-    "UUID::Random" => 0,
     "perl" => "5.010000"
   },
   "script_files" => [

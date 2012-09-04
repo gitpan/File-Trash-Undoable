@@ -2,14 +2,14 @@ NAME
     File::Trash::Undoable - Trash files (with undo support)
 
 VERSION
-    version 0.07
+    version 0.08
 
 SYNOPSIS
      # use the trash-u script
 
 DESCRIPTION
     This module provides routines to trash files, with undo/redo support.
-    Originally written to demonstrate/test Perinci::Sub::Gen::Undoable.
+    Actual trashing/untrashing is provided by File::Trash::FreeDesktop.
 
 SEE ALSO
     *   gvfs-trash

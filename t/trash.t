@@ -49,6 +49,23 @@ test_tx_action(
     },
 );
 
+test_tx_action(
+    name        => "fixable (file)",
+    tmpdir      => $tmpdir,
+    f           => 'File::Trash::Undoable::trash',
+    args        => {path=>"p"},
+    reset_state => sub {
+        remove_tree "p";
+        write_file "p", "";
+    },
+    after_do    => sub {
+        ok(!(-e "p"), "p deleted");
+    },
+    after_undo  => sub {
+        ok((-f "p"), "p restored");
+    },
+);
+
 DONE_TESTING:
 done_testing();
 if (Test::More->builder->is_passing) {

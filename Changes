@@ -1,5 +1,19 @@
 Revision history for File-Trash-Undoable
 
+0.08    2012-09-04 (SHARYANTO)
+
+        [ENHANCEMENT]
+
+        - Adjust to Rinci 1.1.29 & Perinci::Tx::Manager 0.38 (descriptive
+          check_state result message & dry_run message).
+
+        - Adjust to Rinci 1.1.28 (use suffix from -tx_action_id).
+
+        [BUG FIXES]
+
+        - A couple of other fixes.
+
+
 0.07    2012-08-28 (SHARYANTO)
 
         [ENHANCEMENT]

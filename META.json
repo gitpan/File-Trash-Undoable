@@ -29,10 +29,9 @@
             "File::Trash::FreeDesktop" : "0.08",
             "Log::Any" : 0,
             "Perinci::CmdLine" : "0.58",
-            "Perinci::Tx::Manager" : "0.30",
-            "Rinci" : "v1.1.26",
+            "Perinci::Tx::Manager" : "0.38",
+            "Rinci" : "v1.1.29",
             "SHARYANTO::File::Util" : "0.26",
-            "UUID::Random" : 0,
             "perl" : "5.010000"
          }
       },
@@ -54,6 +53,6 @@
          "url" : "http://github.com/sharyanto/perl-File-Trash-Undoable"
       }
    },
-   "version" : "0.07"
+   "version" : "0.08"
 }
 
