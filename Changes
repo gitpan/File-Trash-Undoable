@@ -1,8 +1,15 @@
 Revision history for File-Trash-Undoable
 
+0.09    2012-09-06 (SHARYANTO)
+
+        [ENHANCEMENTS]
+
+        - trash() returns path of file in trash.
+
+
 0.08    2012-09-04 (SHARYANTO)
 
-        [ENHANCEMENT]
+        [ENHANCEMENTS]
 
         - Adjust to Rinci 1.1.29 & Perinci::Tx::Manager 0.38 (descriptive
           check_state result message & dry_run message).
@@ -16,7 +23,7 @@ Revision history for File-Trash-Undoable
 
 0.07    2012-08-28 (SHARYANTO)
 
-        [ENHANCEMENT]
+        [ENHANCEMENTS]
 
         - Update to File::Trash::FreeDesktop 0.08. Replace using mtime with
           using suffix.
@@ -24,7 +31,7 @@ Revision history for File-Trash-Undoable
 
 0.06    2012-08-24 (SHARYANTO)
 
-        [ENHANCEMENT]
+        [ENHANCEMENTS]
 
         - Replace Cwd::abs_path() with SHARYANTO::File::Util::l_abs_path() to
           avoid problem with trashing symlinks.

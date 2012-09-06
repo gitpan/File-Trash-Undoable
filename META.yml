@@ -30,4 +30,4 @@ requires:
 resources:
   homepage: http://metacpan.org/dist/File-Trash-Undoable
   repository: http://github.com/sharyanto/perl-File-Trash-Undoable
-version: 0.08
+version: 0.09

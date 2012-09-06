@@ -5,10 +5,10 @@ use strict;
 use warnings;
 use Log::Any '$log';
 
-use SHARYANTO::File::Util qw(l_abs_path);
 use File::Trash::FreeDesktop;
+use SHARYANTO::File::Util qw(l_abs_path);
 
-our $VERSION = '0.08'; # VERSION
+our $VERSION = '0.09'; # VERSION
 
 our %SPEC;
 
@@ -68,8 +68,9 @@ sub trash {
             }
         } elsif ($tx_action eq 'fix_state') {
             $log->info("Trashing $path ...");
-            eval { $trash->trash({suffix=>$suffix}, $path) };
-            return $@ ? [500, "trash() failed: $@"] : [200, "OK"];
+            my $tfile;
+            eval { $tfile = $trash->trash({suffix=>$suffix}, $path) };
+            return $@ ? [500, "trash() failed: $@"] : [200, "OK", $tfile];
         }
         return [400, "Invalid -tx_action"];
     } else {
@@ -233,7 +234,7 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 SYNOPSIS
 
@@ -302,7 +303,7 @@ Fixed state: path does not exist.
 
 Fixable state: path exists.
 
-This function is idempotent (repeated invocations with same arguments has the same effect as single invocation).
+This function is idempotent (repeated invocations with same arguments has the same effect as single invocation). This function supports transactions.
 
 
 Arguments ('*' denotes required arguments):
@@ -321,11 +322,23 @@ Special arguments:
 
 =item * B<-tx_action> => I<str>
 
-You currently can set this to 'rollback'. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
+For more information on transaction, see L<Rinci::Transaction>.
 
-=item * B<-tx_manager> => I<obj>
+=item * B<-tx_action_id> => I<str>
 
-Instance of transaction manager object, usually L<Perinci::Tx::Manager>. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_recovery> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_rollback> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_v> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
 
 =back
 
@@ -337,7 +350,7 @@ Returns an enveloped result (an array). First element (status) is an integer con
 
 Trash files (with undo support).
 
-This function is idempotent (repeated invocations with same arguments has the same effect as single invocation).
+This function is idempotent (repeated invocations with same arguments has the same effect as single invocation). This function supports transactions.
 
 
 Arguments ('*' denotes required arguments):
@@ -358,11 +371,23 @@ Special arguments:
 
 =item * B<-tx_action> => I<str>
 
-You currently can set this to 'rollback'. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
+For more information on transaction, see L<Rinci::Transaction>.
 
-=item * B<-tx_manager> => I<obj>
+=item * B<-tx_action_id> => I<str>
 
-Instance of transaction manager object, usually L<Perinci::Tx::Manager>. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_recovery> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_rollback> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_v> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
 
 =back
 
@@ -379,7 +404,7 @@ Fixed state: path exists.
 Fixable state: Path does not exist (and exists in trash, and if suffix is
 specified, has the same suffix).
 
-This function is idempotent (repeated invocations with same arguments has the same effect as single invocation).
+This function is idempotent (repeated invocations with same arguments has the same effect as single invocation). This function supports transactions.
 
 
 Arguments ('*' denotes required arguments):
@@ -398,11 +423,23 @@ Special arguments:
 
 =item * B<-tx_action> => I<str>
 
-You currently can set this to 'rollback'. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
+For more information on transaction, see L<Rinci::Transaction>.
 
-=item * B<-tx_manager> => I<obj>
+=item * B<-tx_action_id> => I<str>
 
-Instance of transaction manager object, usually L<Perinci::Tx::Manager>. Usually you do not have to pass this yourself, L<Perinci::Access::InProcess> will do it for you. For more details on transactions, see L<Rinci::function::Transaction>.
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_recovery> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_rollback> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_v> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
 
 =back
 

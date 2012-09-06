@@ -2,7 +2,7 @@ NAME
     File::Trash::Undoable - Trash files (with undo support)
 
 VERSION
-    version 0.08
+    version 0.09
 
 SYNOPSIS
      # use the trash-u script
@@ -69,7 +69,8 @@ FUNCTIONS
     Fixable state: path exists.
 
     This function is idempotent (repeated invocations with same arguments
-    has the same effect as single invocation).
+    has the same effect as single invocation). This function supports
+    transactions.
 
     Arguments ('*' denotes required arguments):
 
@@ -81,16 +82,23 @@ FUNCTIONS
 
     *   -tx_action => *str*
 
-        You currently can set this to 'rollback'. Usually you do not have to
-        pass this yourself, Perinci::Access::InProcess will do it for you.
-        For more details on transactions, see Rinci::function::Transaction.
+        For more information on transaction, see Rinci::Transaction.
 
-    *   -tx_manager => *obj*
+    *   -tx_action_id => *str*
 
-        Instance of transaction manager object, usually
-        Perinci::Tx::Manager. Usually you do not have to pass this yourself,
-        Perinci::Access::InProcess will do it for you. For more details on
-        transactions, see Rinci::function::Transaction.
+        For more information on transaction, see Rinci::Transaction.
+
+    *   -tx_recovery => *str*
+
+        For more information on transaction, see Rinci::Transaction.
+
+    *   -tx_rollback => *str*
+
+        For more information on transaction, see Rinci::Transaction.
+
+    *   -tx_v => *str*
+
+        For more information on transaction, see Rinci::Transaction.
 
     Return value:
 
@@ -105,7 +113,8 @@ FUNCTIONS
     Trash files (with undo support).
 
     This function is idempotent (repeated invocations with same arguments
-    has the same effect as single invocation).
+    has the same effect as single invocation). This function supports
+    transactions.
 
     Arguments ('*' denotes required arguments):
 
@@ -119,16 +128,23 @@ FUNCTIONS
 
     *   -tx_action => *str*
 
-        You currently can set this to 'rollback'. Usually you do not have to
-        pass this yourself, Perinci::Access::InProcess will do it for you.
-        For more details on transactions, see Rinci::function::Transaction.
+        For more information on transaction, see Rinci::Transaction.
 
-    *   -tx_manager => *obj*
+    *   -tx_action_id => *str*
 
-        Instance of transaction manager object, usually
-        Perinci::Tx::Manager. Usually you do not have to pass this yourself,
-        Perinci::Access::InProcess will do it for you. For more details on
-        transactions, see Rinci::function::Transaction.
+        For more information on transaction, see Rinci::Transaction.
+
+    *   -tx_recovery => *str*
+
+        For more information on transaction, see Rinci::Transaction.
+
+    *   -tx_rollback => *str*
+
+        For more information on transaction, see Rinci::Transaction.
+
+    *   -tx_v => *str*
+
+        For more information on transaction, see Rinci::Transaction.
 
     Return value:
 
@@ -148,7 +164,8 @@ FUNCTIONS
     is specified, has the same suffix).
 
     This function is idempotent (repeated invocations with same arguments
-    has the same effect as single invocation).
+    has the same effect as single invocation). This function supports
+    transactions.
 
     Arguments ('*' denotes required arguments):
 
@@ -160,16 +177,23 @@ FUNCTIONS
 
     *   -tx_action => *str*
 
-        You currently can set this to 'rollback'. Usually you do not have to
-        pass this yourself, Perinci::Access::InProcess will do it for you.
-        For more details on transactions, see Rinci::function::Transaction.
+        For more information on transaction, see Rinci::Transaction.
 
-    *   -tx_manager => *obj*
+    *   -tx_action_id => *str*
 
-        Instance of transaction manager object, usually
-        Perinci::Tx::Manager. Usually you do not have to pass this yourself,
-        Perinci::Access::InProcess will do it for you. For more details on
-        transactions, see Rinci::function::Transaction.
+        For more information on transaction, see Rinci::Transaction.
+
+    *   -tx_recovery => *str*
+
+        For more information on transaction, see Rinci::Transaction.
+
+    *   -tx_rollback => *str*
+
+        For more information on transaction, see Rinci::Transaction.
+
+    *   -tx_v => *str*
+
+        For more information on transaction, see Rinci::Transaction.
 
     Return value:
 
