@@ -2,7 +2,7 @@ NAME
     File::Trash::Undoable - Trash files (with undo support)
 
 VERSION
-    version 0.09
+    version 0.10
 
 SYNOPSIS
      # use the trash-u script
@@ -27,15 +27,17 @@ SEE ALSO
         writing, does not support per-filesystem trash (everything goes into
         home trash).
 
-DESCRIPTION
-    This module has Rinci metadata.
+AUTHOR
+    Steven Haryanto <stevenharyanto@gmail.com>
+
+COPYRIGHT AND LICENSE
+    This software is copyright (c) 2013 by Steven Haryanto.
+
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
 
 FUNCTIONS
-    None are exported by default, but they are exportable.
-
   empty_trash() -> [status, msg, result, meta]
-    Empty trash.
-
     No arguments.
 
     Return value:
@@ -48,8 +50,6 @@ FUNCTIONS
     is optional, a hash that contains extra information.
 
   list_trash_contents() -> [status, msg, result, meta]
-    List contents of trash directory.
-
     No arguments.
 
     Return value:
@@ -61,44 +61,8 @@ FUNCTIONS
     the actual result. Fourth element (meta) is called result metadata and
     is optional, a hash that contains extra information.
 
-  trash(%args) -> [status, msg, result, meta]
-    Trash a file.
-
-    Fixed state: path does not exist.
-
-    Fixable state: path exists.
-
-    This function is idempotent (repeated invocations with same arguments
-    has the same effect as single invocation). This function supports
-    transactions.
-
-    Arguments ('*' denotes required arguments):
-
-    *   path* => *str*
-
-    *   suffix => *str*
-
-    Special arguments:
-
-    *   -tx_action => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_action_id => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_recovery => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_rollback => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_v => *str*
-
-        For more information on transaction, see Rinci::Transaction.
+  trash() -> [status, msg, result, meta]
+    No arguments.
 
     Return value:
 
@@ -109,42 +73,8 @@ FUNCTIONS
     the actual result. Fourth element (meta) is called result metadata and
     is optional, a hash that contains extra information.
 
-  trash_files(%args) -> [status, msg, result, meta]
-    Trash files (with undo support).
-
-    This function is idempotent (repeated invocations with same arguments
-    has the same effect as single invocation). This function supports
-    transactions.
-
-    Arguments ('*' denotes required arguments):
-
-    *   files* => *array*
-
-        Files/dirs to delete.
-
-        Files must exist.
-
-    Special arguments:
-
-    *   -tx_action => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_action_id => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_recovery => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_rollback => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_v => *str*
-
-        For more information on transaction, see Rinci::Transaction.
+  trash_files() -> [status, msg, result, meta]
+    No arguments.
 
     Return value:
 
@@ -155,45 +85,8 @@ FUNCTIONS
     the actual result. Fourth element (meta) is called result metadata and
     is optional, a hash that contains extra information.
 
-  untrash(%args) -> [status, msg, result, meta]
-    Untrash a file.
-
-    Fixed state: path exists.
-
-    Fixable state: Path does not exist (and exists in trash, and if suffix
-    is specified, has the same suffix).
-
-    This function is idempotent (repeated invocations with same arguments
-    has the same effect as single invocation). This function supports
-    transactions.
-
-    Arguments ('*' denotes required arguments):
-
-    *   path* => *str*
-
-    *   suffix => *str*
-
-    Special arguments:
-
-    *   -tx_action => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_action_id => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_recovery => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_rollback => *str*
-
-        For more information on transaction, see Rinci::Transaction.
-
-    *   -tx_v => *str*
-
-        For more information on transaction, see Rinci::Transaction.
+  untrash() -> [status, msg, result, meta]
+    No arguments.
 
     Return value:
 
@@ -203,13 +96,4 @@ FUNCTIONS
     message, or 'OK' if status is 200. Third element (result) is optional,
     the actual result. Fourth element (meta) is called result metadata and
     is optional, a hash that contains extra information.
-
-AUTHOR
-    Steven Haryanto <stevenharyanto@gmail.com>
-
-COPYRIGHT AND LICENSE
-    This software is copyright (c) 2012 by Steven Haryanto.
-
-    This is free software; you can redistribute it and/or modify it under
-    the same terms as the Perl 5 programming language system itself.
 

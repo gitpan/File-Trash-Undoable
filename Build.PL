@@ -7,13 +7,11 @@ use Module::Build 0.3601;
 
 my %module_build_args = (
   "build_requires" => {
-    "File::Path" => "2.07",
     "File::Slurp" => 0,
     "File::chdir" => 0,
     "Module::Build" => "0.3601",
-    "Test::More" => "0.96",
-    "Test::Perinci::Tx::Manager" => 0,
-    "autodie" => 0
+    "Test::More" => "0.98",
+    "Test::Perinci::Tx::Manager" => 0
   },
   "configure_requires" => {
     "Module::Build" => "0.3601"
@@ -23,7 +21,7 @@ my %module_build_args = (
     "Steven Haryanto <stevenharyanto\@gmail.com>"
   ],
   "dist_name" => "File-Trash-Undoable",
-  "dist_version" => "0.09",
+  "dist_version" => "0.10",
   "license" => "perl",
   "module_name" => "File::Trash::Undoable",
   "recommends" => {},
@@ -31,11 +29,11 @@ my %module_build_args = (
   "requires" => {
     "File::Trash::FreeDesktop" => "0.08",
     "Log::Any" => 0,
-    "Perinci::CmdLine" => "0.58",
+    "Perinci::CmdLine" => "0.76",
     "Perinci::Tx::Manager" => "0.38",
     "Rinci" => "v1.1.29",
     "SHARYANTO::File::Util" => "0.26",
-    "perl" => "5.010000"
+    "perl" => "5.010001"
   },
   "script_files" => [
     "bin/trash-u"

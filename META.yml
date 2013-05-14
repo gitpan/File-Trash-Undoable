@@ -3,17 +3,15 @@ abstract: 'Trash files (with undo support)'
 author:
   - 'Steven Haryanto <stevenharyanto@gmail.com>'
 build_requires:
-  File::Path: 2.07
   File::Slurp: 0
   File::chdir: 0
   Module::Build: 0.3601
-  Test::More: 0.96
+  Test::More: 0.98
   Test::Perinci::Tx::Manager: 0
-  autodie: 0
 configure_requires:
   Module::Build: 0.3601
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300006, CPAN::Meta::Converter version 2.113640'
+generated_by: 'Dist::Zilla version 4.300015, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -22,12 +20,12 @@ name: File-Trash-Undoable
 requires:
   File::Trash::FreeDesktop: 0.08
   Log::Any: 0
-  Perinci::CmdLine: 0.58
+  Perinci::CmdLine: 0.76
   Perinci::Tx::Manager: 0.38
   Rinci: v1.1.29
   SHARYANTO::File::Util: 0.26
-  perl: 5.010000
+  perl: 5.010001
 resources:
   homepage: http://metacpan.org/dist/File-Trash-Undoable
   repository: http://github.com/sharyanto/perl-File-Trash-Undoable
-version: 0.09
+version: 0.10

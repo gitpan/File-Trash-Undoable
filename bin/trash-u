@@ -3,11 +3,11 @@
 use 5.010;
 use strict;
 use warnings;
-use Perinci::CmdLine;
+use Perinci::CmdLine 0.76;
 
-our $VERSION = '0.09'; # VERSION
+our $VERSION = '0.10'; # VERSION
 
-Perinci::CmdLine->new(
+my $cmd = Perinci::CmdLine->new(
     url => '/File/Trash/Undoable/',
     subcommands => {
         trash         => {
@@ -23,23 +23,29 @@ Perinci::CmdLine->new(
             undo => 0,
         },
     },
-    extra_opts => {
-        empty => {
-            handler => sub {
-                my $self = shift;
-                $self->{_selected_subcommand} = 'empty';
-            },
-        },
-        list_contents => {
-            handler => sub {
-                my $self = shift;
-                $self->{_selected_subcommand} = 'list_contents';
-            },
-        },
-    },
     default_subcommand => 'trash',
     undo => 1,
-)->run;
+);
+
+delete $cmd->common_opts->{list};
+
+$cmd->common_opts->{empty} = {
+    getopt  => 'empty',
+    handler => sub {
+        my $self = shift;
+        $self->{_selected_subcommand} = 'empty';
+    },
+};
+
+$cmd->common_opts->{list_contents} = {
+    getopt  => 'list-contents',
+    handler => sub {
+        my $self = shift;
+        $self->{_selected_subcommand} = 'list_contents';
+    },
+};
+
+$cmd->run;
 
 1;
 # ABSTRACT: Trash files, with undo/redo capability
@@ -55,7 +61,7 @@ trash-u - Trash files, with undo/redo capability
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 SYNOPSIS
 
@@ -71,7 +77,7 @@ version 0.09
  # trash some more files
  % trash-u * .tmp
 
- # ups made a mistake; no worry, let's undo; now previous trashing is reversed
+ # oops, made a mistake; no worry, let's undo; now previous trashing is reversed
  % trash-u --undo
 
  # undo again; now the *.bak files are also restored
@@ -139,7 +145,7 @@ Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Steven Haryanto.
+This software is copyright (c) 2013 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
