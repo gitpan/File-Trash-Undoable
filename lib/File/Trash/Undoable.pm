@@ -8,7 +8,7 @@ use Log::Any '$log';
 use File::Trash::FreeDesktop;
 use SHARYANTO::File::Util qw(l_abs_path);
 
-our $VERSION = '0.10'; # VERSION
+our $VERSION = '0.11'; # VERSION
 
 our %SPEC;
 
@@ -198,6 +198,7 @@ sub trash_files {
 }
 
 $SPEC{list_trash_contents} = {
+    v => 1.1,
     summary => 'List contents of trash directory',
 };
 sub list_trash_contents {
@@ -206,6 +207,7 @@ sub list_trash_contents {
 }
 
 $SPEC{empty_trash} = {
+    v => 1.1,
     summary => 'Empty trash',
 };
 sub empty_trash {
@@ -224,9 +226,11 @@ sub empty_trash {
 1;
 # ABSTRACT: Trash files (with undo support)
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -234,7 +238,7 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-version 0.10
+This document describes version 0.11 of File::Trash::Undoable (from Perl distribution File-Trash-Undoable), released on 2014-05-17.
 
 =head1 SYNOPSIS
 
@@ -244,6 +248,220 @@ version 0.10
 
 This module provides routines to trash files, with undo/redo support. Actual
 trashing/untrashing is provided by L<File::Trash::FreeDesktop>.
+
+=head1 FUNCTIONS
+
+
+=head2 empty_trash() -> [status, msg, result, meta]
+
+Empty trash.
+
+No arguments.
+
+Return value:
+
+Returns an enveloped result (an array).
+
+First element (status) is an integer containing HTTP status code
+(200 means OK, 4xx caller error, 5xx function error). Second element
+(msg) is a string containing error message, or 'OK' if status is
+200. Third element (result) is optional, the actual result. Fourth
+element (meta) is called result metadata and is optional, a hash
+that contains extra information.
+
+
+=head2 list_trash_contents() -> [status, msg, result, meta]
+
+List contents of trash directory.
+
+No arguments.
+
+Return value:
+
+Returns an enveloped result (an array).
+
+First element (status) is an integer containing HTTP status code
+(200 means OK, 4xx caller error, 5xx function error). Second element
+(msg) is a string containing error message, or 'OK' if status is
+200. Third element (result) is optional, the actual result. Fourth
+element (meta) is called result metadata and is optional, a hash
+that contains extra information.
+
+
+=head2 trash(%args) -> [status, msg, result, meta]
+
+Trash a file.
+
+Fixed state: path does not exist.
+
+Fixable state: path exists.
+
+This function is idempotent (repeated invocations with same arguments has the same effect as single invocation). This function supports transactions.
+
+
+Arguments ('*' denotes required arguments):
+
+=over 4
+
+=item * B<path>* => I<str>
+
+=item * B<suffix> => I<str>
+
+=back
+
+Special arguments:
+
+=over 4
+
+=item * B<-tx_action> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_action_id> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_recovery> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_rollback> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_v> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=back
+
+Return value:
+
+Returns an enveloped result (an array).
+
+First element (status) is an integer containing HTTP status code
+(200 means OK, 4xx caller error, 5xx function error). Second element
+(msg) is a string containing error message, or 'OK' if status is
+200. Third element (result) is optional, the actual result. Fourth
+element (meta) is called result metadata and is optional, a hash
+that contains extra information.
+
+
+=head2 trash_files(%args) -> [status, msg, result, meta]
+
+Trash files (with undo support).
+
+This function is idempotent (repeated invocations with same arguments has the same effect as single invocation). This function supports transactions.
+
+
+Arguments ('*' denotes required arguments):
+
+=over 4
+
+=item * B<files>* => I<array>
+
+Files/dirs to delete.
+
+Files must exist.
+
+=back
+
+Special arguments:
+
+=over 4
+
+=item * B<-tx_action> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_action_id> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_recovery> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_rollback> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_v> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=back
+
+Return value:
+
+Returns an enveloped result (an array).
+
+First element (status) is an integer containing HTTP status code
+(200 means OK, 4xx caller error, 5xx function error). Second element
+(msg) is a string containing error message, or 'OK' if status is
+200. Third element (result) is optional, the actual result. Fourth
+element (meta) is called result metadata and is optional, a hash
+that contains extra information.
+
+
+=head2 untrash(%args) -> [status, msg, result, meta]
+
+Untrash a file.
+
+Fixed state: path exists.
+
+Fixable state: Path does not exist (and exists in trash, and if suffix is
+specified, has the same suffix).
+
+This function is idempotent (repeated invocations with same arguments has the same effect as single invocation). This function supports transactions.
+
+
+Arguments ('*' denotes required arguments):
+
+=over 4
+
+=item * B<path>* => I<str>
+
+=item * B<suffix> => I<str>
+
+=back
+
+Special arguments:
+
+=over 4
+
+=item * B<-tx_action> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_action_id> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_recovery> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_rollback> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=item * B<-tx_v> => I<str>
+
+For more information on transaction, see L<Rinci::Transaction>.
+
+=back
+
+Return value:
+
+Returns an enveloped result (an array).
+
+First element (status) is an integer containing HTTP status code
+(200 means OK, 4xx caller error, 5xx function error). Second element
+(msg) is a string containing error message, or 'OK' if status is
+200. Third element (result) is optional, the actual result. Fourth
+element (meta) is called result metadata and is optional, a hash
+that contains extra information.
 
 =head1 SEE ALSO
 
@@ -265,59 +483,31 @@ support per-filesystem trash (everything goes into home trash).
 
 =back
 
+=head1 HOMEPAGE
+
+Please visit the project's homepage at L<https://metacpan.org/release/File-Trash-Undoable>.
+
+=head1 SOURCE
+
+Source repository is at L<https://github.com/sharyanto/perl-File-Trash-Undoable>.
+
+=head1 BUGS
+
+Please report any bugs or feature requests on the bugtracker website L<https://rt.cpan.org/Public/Dist/Display.html?Name=File-Trash-Undoable>
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
+
 =head1 AUTHOR
 
 Steven Haryanto <stevenharyanto@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Steven Haryanto.
+This software is copyright (c) 2014 by Steven Haryanto.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
-=head1 FUNCTIONS
-
-
-=head2 empty_trash() -> [status, msg, result, meta]
-
-No arguments.
-
-Return value:
-
-Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
-
-=head2 list_trash_contents() -> [status, msg, result, meta]
-
-No arguments.
-
-Return value:
-
-Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
-
-=head2 trash() -> [status, msg, result, meta]
-
-No arguments.
-
-Return value:
-
-Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
-
-=head2 trash_files() -> [status, msg, result, meta]
-
-No arguments.
-
-Return value:
-
-Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
-
-=head2 untrash() -> [status, msg, result, meta]
-
-No arguments.
-
-Return value:
-
-Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information.
-
 =cut
-
