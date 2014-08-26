@@ -2,8 +2,8 @@ NAME
     File::Trash::Undoable - Trash files (with undo support)
 
 VERSION
-    This document describes version 0.11 of File::Trash::Undoable (from Perl
-    distribution File-Trash-Undoable), released on 2014-05-17.
+    This document describes version 0.12 of File::Trash::Undoable (from Perl
+    distribution File-Trash-Undoable), released on 2014-08-24.
 
 SYNOPSIS
      # use the trash-u script
@@ -29,6 +29,8 @@ FUNCTIONS
     is called result metadata and is optional, a hash that contains extra
     information.
 
+     (any)
+
   list_trash_contents() -> [status, msg, result, meta]
     List contents of trash directory.
 
@@ -44,6 +46,8 @@ FUNCTIONS
     element (result) is optional, the actual result. Fourth element (meta)
     is called result metadata and is optional, a hash that contains extra
     information.
+
+     (any)
 
   trash(%args) -> [status, msg, result, meta]
     Trash a file.
@@ -95,6 +99,8 @@ FUNCTIONS
     is called result metadata and is optional, a hash that contains extra
     information.
 
+     (any)
+
   trash_files(%args) -> [status, msg, result, meta]
     Trash files (with undo support).
 
@@ -142,6 +148,8 @@ FUNCTIONS
     element (result) is optional, the actual result. Fourth element (meta)
     is called result metadata and is optional, a hash that contains extra
     information.
+
+     (any)
 
   untrash(%args) -> [status, msg, result, meta]
     Untrash a file.
@@ -193,6 +201,8 @@ FUNCTIONS
     element (result) is optional, the actual result. Fourth element (meta)
     is called result metadata and is optional, a hash that contains extra
     information.
+
+     (any)
 
 SEE ALSO
     *   gvfs-trash

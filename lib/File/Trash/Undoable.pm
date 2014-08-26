@@ -8,7 +8,7 @@ use Log::Any '$log';
 use File::Trash::FreeDesktop;
 use SHARYANTO::File::Util qw(l_abs_path);
 
-our $VERSION = '0.11'; # VERSION
+our $VERSION = '0.12'; # VERSION
 
 our %SPEC;
 
@@ -238,7 +238,7 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-This document describes version 0.11 of File::Trash::Undoable (from Perl distribution File-Trash-Undoable), released on 2014-05-17.
+This document describes version 0.12 of File::Trash::Undoable (from Perl distribution File-Trash-Undoable), released on 2014-08-24.
 
 =head1 SYNOPSIS
 
@@ -269,6 +269,8 @@ First element (status) is an integer containing HTTP status code
 element (meta) is called result metadata and is optional, a hash
 that contains extra information.
 
+ (any)
+
 
 =head2 list_trash_contents() -> [status, msg, result, meta]
 
@@ -286,6 +288,8 @@ First element (status) is an integer containing HTTP status code
 200. Third element (result) is optional, the actual result. Fourth
 element (meta) is called result metadata and is optional, a hash
 that contains extra information.
+
+ (any)
 
 
 =head2 trash(%args) -> [status, msg, result, meta]
@@ -346,6 +350,8 @@ First element (status) is an integer containing HTTP status code
 element (meta) is called result metadata and is optional, a hash
 that contains extra information.
 
+ (any)
+
 
 =head2 trash_files(%args) -> [status, msg, result, meta]
 
@@ -402,6 +408,8 @@ First element (status) is an integer containing HTTP status code
 200. Third element (result) is optional, the actual result. Fourth
 element (meta) is called result metadata and is optional, a hash
 that contains extra information.
+
+ (any)
 
 
 =head2 untrash(%args) -> [status, msg, result, meta]
@@ -462,6 +470,8 @@ First element (status) is an integer containing HTTP status code
 200. Third element (result) is optional, the actual result. Fourth
 element (meta) is called result metadata and is optional, a hash
 that contains extra information.
+
+ (any)
 
 =head1 SEE ALSO
 

@@ -1,11 +1,12 @@
-#!/usr/bin/perl
+#!perl
+
+our $DATE = '2014-08-24'; # DATE
+our $VERSION = '0.12'; # VERSION
 
 use 5.010;
 use strict;
 use warnings;
-use Perinci::CmdLine 0.76;
-
-our $VERSION = '0.11'; # VERSION
+use Perinci::CmdLine 1.20;
 
 my $cmd = Perinci::CmdLine->new(
     url => '/File/Trash/Undoable/',
@@ -32,16 +33,20 @@ delete $cmd->common_opts->{list};
 $cmd->common_opts->{empty} = {
     getopt  => 'empty',
     handler => sub {
-        my $self = shift;
-        $self->{_selected_subcommand} = 'empty';
+        my ($go, $val, $r) = @_;
+        $r->{subcommand_name} = 'empty';
+        $r->{subcommand_name_from} = '--cmd'; # XXX not exactly accurate
+        $r->{skip_parse_subcommand_argv} = 1;
     },
 };
 
 $cmd->common_opts->{list_contents} = {
     getopt  => 'list-contents',
     handler => sub {
-        my $self = shift;
-        $self->{_selected_subcommand} = 'list_contents';
+        my ($go, $val, $r) = @_;
+        $r->{subcommand_name} = 'list_contents';
+        $r->{subcommand_name_from} = '--cmd'; # XXX not exactly accurate
+        $r->{skip_parse_subcommand_argv} = 1;
     },
 };
 
@@ -63,7 +68,7 @@ trash-u - Trash files, with undo/redo capability
 
 =head1 VERSION
 
-This document describes version 0.11 of trash-u (from Perl distribution File-Trash-Undoable), released on 2014-05-17.
+This document describes version 0.12 of trash-u (from Perl distribution File-Trash-Undoable), released on 2014-08-24.
 
 =head1 SYNOPSIS
 
