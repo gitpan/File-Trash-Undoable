@@ -8,7 +8,7 @@ use Log::Any '$log';
 use File::Trash::FreeDesktop;
 use SHARYANTO::File::Util qw(l_abs_path);
 
-our $VERSION = '0.12'; # VERSION
+our $VERSION = '0.13'; # VERSION
 
 our %SPEC;
 
@@ -238,7 +238,7 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-This document describes version 0.12 of File::Trash::Undoable (from Perl distribution File-Trash-Undoable), released on 2014-08-24.
+This document describes version 0.13 of File::Trash::Undoable (from Perl distribution File-Trash-Undoable), released on 2014-10-14.
 
 =head1 SYNOPSIS
 
@@ -248,6 +248,8 @@ This document describes version 0.12 of File::Trash::Undoable (from Perl distrib
 
 This module provides routines to trash files, with undo/redo support. Actual
 trashing/untrashing is provided by L<File::Trash::FreeDesktop>.
+
+Screenshots:
 
 =head1 FUNCTIONS
 
@@ -473,6 +475,8 @@ that contains extra information.
 
  (any)
 
+=for HTML <p><img src="http://blogs.perl.org/users/perlancar/screenshot-trashu.jpg" /><br />
+
 =head1 SEE ALSO
 
 =over 4
@@ -499,7 +503,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/File-Trash
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/sharyanto/perl-File-Trash-Undoable>.
+Source repository is at L<https://github.com/perlancar/perl-File-Trash-Undoable>.
 
 =head1 BUGS
 
@@ -511,11 +515,11 @@ feature.
 
 =head1 AUTHOR
 
-Steven Haryanto <stevenharyanto@gmail.com>
+perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by Steven Haryanto.
+This software is copyright (c) 2014 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

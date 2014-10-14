@@ -1,7 +1,7 @@
 #!perl
 
-our $DATE = '2014-08-24'; # DATE
-our $VERSION = '0.12'; # VERSION
+our $DATE = '2014-10-14'; # DATE
+our $VERSION = '0.13'; # VERSION
 
 use 5.010;
 use strict;
@@ -68,7 +68,7 @@ trash-u - Trash files, with undo/redo capability
 
 =head1 VERSION
 
-This document describes version 0.12 of trash-u (from Perl distribution File-Trash-Undoable), released on 2014-08-24.
+This document describes version 0.13 of trash-u (from Perl distribution File-Trash-Undoable), released on 2014-10-14.
 
 =head1 SYNOPSIS
 
@@ -152,7 +152,7 @@ Please visit the project's homepage at L<https://metacpan.org/release/File-Trash
 
 =head1 SOURCE
 
-Source repository is at L<https://github.com/sharyanto/perl-File-Trash-Undoable>.
+Source repository is at L<https://github.com/perlancar/perl-File-Trash-Undoable>.
 
 =head1 BUGS
 
@@ -164,11 +164,11 @@ feature.
 
 =head1 AUTHOR
 
-Steven Haryanto <stevenharyanto@gmail.com>
+perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by Steven Haryanto.
+This software is copyright (c) 2014 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
