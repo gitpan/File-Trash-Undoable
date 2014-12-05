@@ -1,7 +1,7 @@
 #!perl
 
-our $DATE = '2014-10-14'; # DATE
-our $VERSION = '0.13'; # VERSION
+our $DATE = '2014-12-05'; # DATE
+our $VERSION = '0.14'; # VERSION
 
 use 5.010;
 use strict;
@@ -68,7 +68,7 @@ trash-u - Trash files, with undo/redo capability
 
 =head1 VERSION
 
-This document describes version 0.13 of trash-u (from Perl distribution File-Trash-Undoable), released on 2014-10-14.
+This document describes version 0.14 of trash-u (from Perl distribution File-Trash-Undoable), released on 2014-12-05.
 
 =head1 SYNOPSIS
 
@@ -115,6 +115,143 @@ Features: undo/redo, dry run mode, per-filesystem trash dir.
 This program is relatively new and have not yet been tested extensively. Use
 with caution.
 
+=head1 SUBCOMMANDS
+
+=head2 B<empty>
+
+Empty trash.
+
+=head2 B<list_contents>
+
+List contents of trash directory.
+
+=head2 B<trash>
+
+Trash files (with undo support).
+
+=head1 OPTIONS
+
+C<*> marks required options.
+
+=head2 Common options
+
+=over
+
+=item B<--clear-history>
+
+Clear actions history.
+
+=item B<--cmd>=I<s>
+
+=item B<--config-path>=I<s>
+
+Set path to configuration file.
+
+Can be specified multiple times.
+
+=item B<--config-profile>=I<s>
+
+Set configuration profile to use.
+
+=item B<--empty>
+
+=item B<--format-options>=I<s>
+
+Pass options to formatter.
+
+=item B<--format>=I<s>
+
+Choose output format, e.g. json, text.
+
+=item B<--help>, B<-h>, B<-?>
+
+Display this help message.
+
+=item B<--history>
+
+List actions history.
+
+=item B<--json>
+
+Equivalent to --format=json-pretty.
+
+=item B<--list-contents>
+
+=item B<--no-config>
+
+Do not use any configuration file.
+
+=item B<--perl>
+
+Equivalent to --format=perl.
+
+=item B<--redo>
+
+Redo previous undone action.
+
+=item B<--subcommands>
+
+List available subcommands.
+
+=item B<--undo>
+
+Undo previous action.
+
+=item B<--version>, B<-v>
+
+Show version.
+
+=item B<--yaml>
+
+Equivalent to --format=yaml.
+
+=back
+
+=head2 Options for subcommand empty
+
+=over
+
+=back
+
+=head2 Options for subcommand list_contents
+
+=over
+
+=back
+
+=head2 Options for subcommand trash
+
+=over
+
+=item B<--files-json>=I<s>
+
+Files/dirs to delete (JSON-encoded).
+
+See C<--files>.
+
+=item B<--files-yaml>=I<s>
+
+Files/dirs to delete (YAML-encoded).
+
+See C<--files>.
+
+=item B<--files>=I<s@>*
+
+Files/dirs to delete.
+
+Files must exist.
+
+
+Can be specified multiple times.
+
+=back
+
+=head1 FILES
+
+B</etc/trash-u.conf>
+
+B<~/trash-u.conf>
+
 =head1 USING AS rm REPLACEMENT
 
 B<trash-u> can be used as B<rm> replacement (a.k.a. alias) with some caveats:
@@ -145,6 +282,46 @@ B<trash-cli>
 B<gvfs-trash>
 
 B<rmv>
+
+=head1 COMPLETION
+
+This script has shell tab completion capability with support for several shells.
+
+=head2 bash
+
+To activate bash completion for this script, put:
+
+ complete -C trash-u trash-u
+
+in your bash startup (e.g. C<~/.bashrc>). Your next shell session will then recognize tab completion for the command. Or, you can also directly execute the line above in your shell to activate immediately.
+
+You can also install L<App::BashCompletionProg> which makes it easy to add completion for Perinci::CmdLine-based scripts. After you install the module and put C<. ~/.bash-complete-prog> (or C<. /etc/bash-complete-prog>), you can just run C<bash-completion-prog> and the C<complete> command will be added to your C<~/.bash-completion-prog>. Your next shell session will then recognize tab completion for the command.
+
+=head2 fish
+
+To activate fish completion for this script, execute:
+
+ begin; set -lx COMP_SHELL fish; set -lx COMP_MODE gen_command; trash-u; end > $HOME/.config/fish/completions/trash-u.fish
+
+Or if you want to install globally, you can instead write the generated script to C</etc/fish/completions/trash-u.fish> or C</usr/share/fish/completions/trash-u.fish>. The exact path might be different on your system. Please check your C<fish_complete_path> variable.
+
+=head2 tcsh
+
+To activate tcsh completion for this script, put:
+
+ complete trash-u 'p/*/`trash-u`/'
+
+in your tcsh startup (e.g. C<~/.tcshrc>). Your next shell session will then recognize tab completion for the command. Or, you can also directly execute the line above in your shell to activate immediately.
+
+=head2 zsh
+
+To activate zsh completion for this script, put:
+
+ _trash_u() { read -l; local cl="$REPLY"; read -ln; local cp="$REPLY"; reply=(`COMP_SHELL=zsh COMP_LINE="$cl" COMP_POINT="$cp" trash-u`) }
+
+ compctl -K _trash_u trash-u
+
+in your zsh startup (e.g. C<~/.zshrc>). Your next shell session will then recognize tab completion for the command. Or, you can also directly execute the line above in your shell to activate immediately.
 
 =head1 HOMEPAGE
 

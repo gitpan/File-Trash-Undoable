@@ -1,14 +1,15 @@
 package File::Trash::Undoable;
 
+our $DATE = '2014-12-05'; # DATE
+our $VERSION = '0.14'; # VERSION
+
 use 5.010001;
 use strict;
 use warnings;
 use Log::Any '$log';
 
+use File::MoreUtil qw(l_abs_path);
 use File::Trash::FreeDesktop;
-use SHARYANTO::File::Util qw(l_abs_path);
-
-our $VERSION = '0.13'; # VERSION
 
 our %SPEC;
 
@@ -238,7 +239,7 @@ File::Trash::Undoable - Trash files (with undo support)
 
 =head1 VERSION
 
-This document describes version 0.13 of File::Trash::Undoable (from Perl distribution File-Trash-Undoable), released on 2014-10-14.
+This document describes version 0.14 of File::Trash::Undoable (from Perl distribution File-Trash-Undoable), released on 2014-12-05.
 
 =head1 SYNOPSIS
 

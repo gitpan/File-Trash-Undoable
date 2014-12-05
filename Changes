@@ -1,5 +1,13 @@
 Revision history for File-Trash-Undoable
 
+0.14    2014-12-05 (PERLANCAR)
+
+	- No functional changes.
+
+	- Use new name of renamed module SHARYANTO::File::Util ->
+	  File::MoreUtil.
+
+
 0.13    2014-10-14 (PERLANCAR)
 
 	- No functional changes.
