@@ -1,5 +1,5 @@
 {
-   "abstract" : "Trash files (with undo support)",
+   "abstract" : "Trash files, with undo/redo capability",
    "author" : [
       "perlancar <perlancar@cpan.org>"
    ],
@@ -16,7 +16,8 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "ExtUtils::MakeMaker" : "0"
+            "ExtUtils::MakeMaker" : "0",
+            "Perl::osnames" : "0.09"
          }
       },
       "develop" : {
@@ -32,7 +33,7 @@
             "File::MoreUtil" : "0",
             "File::Trash::FreeDesktop" : "0.08",
             "Log::Any" : "0",
-            "Perinci::CmdLine" : "1.20",
+            "Perinci::CmdLine" : "1.41",
             "Perinci::Tx::Manager" : "0.38",
             "Rinci" : "v1.1.29",
             "perl" : "5.010001"
@@ -62,7 +63,7 @@
          "web" : "https://github.com/perlancar/perl-File-Trash-Undoable"
       }
    },
-   "version" : "0.14",
+   "version" : "0.15",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
@@ -155,6 +156,16 @@
             "version" : "5.025"
          },
          {
+            "class" : "Dist::Zilla::Plugin::Rinci::AbstractFromMeta",
+            "name" : "@Author::PERLANCAR/Rinci::AbstractFromMeta",
+            "version" : "0.06"
+         },
+         {
+            "class" : "Dist::Zilla::Plugin::PodnameFromFilename",
+            "name" : "@Author::PERLANCAR/PodnameFromFilename",
+            "version" : "0.01"
+         },
+         {
             "class" : "Dist::Zilla::Plugin::PERLANCAR::MetaResources",
             "name" : "@Author::PERLANCAR/PERLANCAR::MetaResources",
             "version" : "0.03"
@@ -180,14 +191,14 @@
             "version" : "5.025"
          },
          {
-            "class" : "Dist::Zilla::Plugin::Rinci::InstallCompletion",
-            "name" : "@Author::PERLANCAR/Rinci::InstallCompletion",
-            "version" : "0.03"
+            "class" : "Dist::Zilla::Plugin::GenShellCompletion",
+            "name" : "@Author::PERLANCAR/GenShellCompletion",
+            "version" : "0.07"
          },
          {
             "class" : "Dist::Zilla::Plugin::OurDate",
             "name" : "@Author::PERLANCAR/OurDate",
-            "version" : "0.01"
+            "version" : "0.02"
          },
          {
             "class" : "Dist::Zilla::Plugin::PodWeaver",
@@ -256,7 +267,7 @@
                      {
                         "class" : "Pod::Weaver::Plugin::Rinci",
                         "name" : "@Author::PERLANCAR/Rinci",
-                        "version" : "0.21"
+                        "version" : "0.24"
                      },
                      {
                         "class" : "Pod::Weaver::Section::Leftovers",
@@ -271,12 +282,12 @@
                      {
                         "class" : "Pod::Weaver::Section::Completion::GetoptLongComplete",
                         "name" : "@Author::PERLANCAR/Completion::GetoptLongComplete",
-                        "version" : "0.04"
+                        "version" : "0.05"
                      },
                      {
                         "class" : "Pod::Weaver::Section::Completion::PerinciCmdLine",
                         "name" : "@Author::PERLANCAR/Completion::PerinciCmdLine",
-                        "version" : "0.07"
+                        "version" : "0.08"
                      },
                      {
                         "class" : "Pod::Weaver::Section::Homepage::DefaultCPAN",

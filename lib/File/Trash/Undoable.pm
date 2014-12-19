@@ -1,7 +1,7 @@
 package File::Trash::Undoable;
 
-our $DATE = '2014-12-05'; # DATE
-our $VERSION = '0.14'; # VERSION
+our $DATE = '2014-12-19'; # DATE
+our $VERSION = '0.15'; # VERSION
 
 use 5.010001;
 use strict;
@@ -12,6 +12,11 @@ use File::MoreUtil qw(l_abs_path);
 use File::Trash::FreeDesktop;
 
 our %SPEC;
+
+$SPEC{':package'} = {
+    v => 1.1,
+    summary => 'Trash files, with undo/redo capability',
+};
 
 my $trash = File::Trash::FreeDesktop->new;
 
@@ -218,14 +223,13 @@ sub empty_trash {
     $trash->empty;
     if ($cmd) {
         $cmd->run_clear_history;
-        return $cmd->{_res};
     } else {
         [200, "OK"];
     }
 }
 
 1;
-# ABSTRACT: Trash files (with undo support)
+# ABSTRACT: Trash files, with undo/redo capability
 
 __END__
 
@@ -235,11 +239,11 @@ __END__
 
 =head1 NAME
 
-File::Trash::Undoable - Trash files (with undo support)
+File::Trash::Undoable - Trash files, with undo/redo capability
 
 =head1 VERSION
 
-This document describes version 0.14 of File::Trash::Undoable (from Perl distribution File-Trash-Undoable), released on 2014-12-05.
+This document describes version 0.15 of File::Trash::Undoable (from Perl distribution File-Trash-Undoable), released on 2014-12-19.
 
 =head1 SYNOPSIS
 

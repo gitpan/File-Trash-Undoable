@@ -1,9 +1,9 @@
 NAME
-    File::Trash::Undoable - Trash files (with undo support)
+    File::Trash::Undoable - Trash files, with undo/redo capability
 
 VERSION
-    This document describes version 0.14 of File::Trash::Undoable (from Perl
-    distribution File-Trash-Undoable), released on 2014-12-05.
+    This document describes version 0.15 of File::Trash::Undoable (from Perl
+    distribution File-Trash-Undoable), released on 2014-12-19.
 
 SYNOPSIS
      # use the trash-u script

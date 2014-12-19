@@ -1,5 +1,11 @@
 Revision history for File-Trash-Undoable
 
+0.15    2014-12-19 (PERLANCAR)
+
+        - [Bugfix] Update old code (which didn't adjust to pericmd 1.17+, where
+          all pericmd's run methods return envres directly).
+
+
 0.14    2014-12-05 (PERLANCAR)
 
 	- No functional changes.
